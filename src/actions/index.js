@@ -2,12 +2,11 @@ import superagent from "superagent";
 
 export const ADS_FETCHED = "ADS_FETCHED";
 export const AD_FETCHED = "AD_FETCHED";
-// export const USERS_FETCHED = "USERS_FETCHED";
+export const AD_CREATE = "AD_CREATE";
+export const AD_UPDATE = "AD_UPDATE";
+export const AD_DELETE = "AD_DELETE";
 
 const baseUrl = "http://localhost:4000";
-
-// export const SET_ADS = "SET_ADS";
-// export const SET_USERS = "SET_USERS";
 
 const adsFetched = ads => ({
   type: ADS_FETCHED,
@@ -16,13 +15,27 @@ const adsFetched = ads => ({
 
 const adFetched = ad => ({
   type: AD_FETCHED,
-  event
+  ad
+});
+
+const adCreate = ad => ({
+  type: AD_CREATE,
+  ad
+});
+
+const adUpdate = ad => ({
+  type: AD_UPDATE,
+  ad
+});
+
+const adDelete = ad => ({
+  type: AD_DELETE,
+  ad
 });
 
 export const loadAds = () => (dispatch, getState) => {
   // when the state already contains advertisements, we don't fetch them again
   if (getState().ads) return;
-
   // a GET /advertisements request
   superagent(`${baseUrl}/advertisements`)
     .then(response => {
@@ -40,16 +53,35 @@ export const loadAd = id => dispatch => {
     .catch(console.error);
 };
 
-// export function setAds (ads) {
-//   return {
-//     type: "SET_ADS",
-//     payload: ads
-//   };
-// }
+export const createAd = data => dispatch => {
+  superagent
+    .post(`${baseUrl}/advertisements`)
+    .send(data)
+    .then(response => {
+      dispatch(adCreate(response.body));
+    })
+    .catch(console.error);
+};
 
-// export function setUsers (users) {
-//   return {
-//     type: "SET_USERS",
-//     payload: users
-//   };
-// }
+export const updateAd = (id, data) => dispatch => {
+  superagent
+    .patch(`${baseUrl}/advertisements/${id}`)
+    .send(data)
+    .then(response => {
+      dispatch(adUpdate(response.body));
+    })
+    .catch(console.error);
+};
+
+export const deleteAd = ad => dispatch => {
+  superagent
+    .delete(`${baseUrl}/advertisements/${ad.id}`)
+    .then(response => {
+      if (response.ok) {
+        // passing the original event object because the api
+        // returns {} instead of the deleted record
+        dispatch(adDelete(ad));
+      }
+    })
+    .catch(console.error);
+};

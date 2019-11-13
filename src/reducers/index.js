@@ -1,8 +1,12 @@
 import { combineReducers } from "redux";
 import ads from "./ads";
-import users from "./users";
+import ad from "./ad";
+// import users from "./users";
+// import user from "./user";
 
 export default combineReducers({
   ads,
-  users
+  ad
+  // users,
+  // user
 });

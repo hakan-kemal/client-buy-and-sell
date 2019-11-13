@@ -20,3 +20,11 @@
 .App-link {
   color: #09d3ac;
 }
+
+.ad-card {
+  border: 2px solid black;
+}
+/* 
+.ad-image {
+  width: 50%;
+} */
